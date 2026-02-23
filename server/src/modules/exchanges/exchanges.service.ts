@@ -37,14 +37,16 @@ export class ExchangesService {
    * Без await довелося б писати вкладені .then(), що ускладнює читання.
    */
   async createExchangeRequest(initiatorId: string, bookCopyId: string) {
+    console.log('Incoming ID:', bookCopyId);
     const bookCopy = await this.bookCopyModel.findById(bookCopyId);
+    console.log('Found bookCopy:', bookCopy);
 
     if (!bookCopy) {
       /**
        * NotFoundException разом з BadRequestException є стандартними обробниками помилок NestJS
        * для HTTP-винятків. Вони широко використовуються для повернення коректних статус-кодів
        * (404, 400). Є й інші варіанти: можна кидати власні помилки або використовувати інші
-       * HTTP-винятки (ForbiddenException, UnauthorizedException тощо). Обирано саме ці, бо
+       * HTTP-винятки (ForbiddenException, UnauthorizedException тощо). Обрано саме ці, бо
        * вони чітко відповідають ситуації: "не знайдено" або "некоректний запит".
        */
       throw new NotFoundException('Book copy not found');
