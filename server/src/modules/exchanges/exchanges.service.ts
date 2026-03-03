@@ -7,7 +7,10 @@ import {
   ExchangeDocument,
   ExchangeStatus,
 } from './schemas/exchange.schema';
-import { BookCopyDocument } from '../book-copies/schemas/book-copy.schema';
+import {
+  BookCopy,
+  BookCopyDocument,
+} from '../book-copies/schemas/book-copy.schema';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 @Injectable()
@@ -25,7 +28,7 @@ export class ExchangesService {
     @InjectModel(Exchange.name)
     private exchangeModel: Model<ExchangeDocument>,
 
-    @InjectModel(Exchange.name)
+    @InjectModel(BookCopy.name)
     private bookCopyModel: Model<BookCopyDocument>,
   ) {}
 
@@ -37,6 +40,7 @@ export class ExchangesService {
    * Без await довелося б писати вкладені .then(), що ускладнює читання.
    */
   async createExchangeRequest(initiatorId: string, bookCopyId: string) {
+    console.log(this.bookCopyModel.collection.collectionName);
     console.log('Incoming ID:', bookCopyId);
     const bookCopy = await this.bookCopyModel.findById(bookCopyId);
     console.log('Found bookCopy:', bookCopy);
