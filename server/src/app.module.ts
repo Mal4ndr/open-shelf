@@ -42,9 +42,16 @@ import { ExchangesModule } from './modules/exchanges/exchanges.module';
        * Функція повертає об’єкт { uri: ... }, який використає Mongoose для підключення. Такий підхід
        * дозволяє отримати значення з сервісу, а не жорстко прописувати URI у коді.
        */
-      useFactory: async (configService: ConfigService) => ({
-        uri: configService.get('MONGO_URI'),
-      }),
+      useFactory: async (configService: ConfigService) => {
+        const env = configService.get('NODE_ENV');
+
+        const uri =
+          env === 'development'
+            ? configService.get('MONGO_URI_DEV')
+            : configService.get('MONGO_URI');
+
+        return { uri };
+      },
       inject: [ConfigService],
     }),
     BooksModule,

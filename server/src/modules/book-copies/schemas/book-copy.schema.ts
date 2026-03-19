@@ -21,7 +21,13 @@ export enum BookCopyStatus {
   BORROWED = 'borrowed',
 }
 
-@Schema({ timestamps: true })
+export enum BookCopyAvailabilityType {
+  LEND = 'lend',
+  EXCHANGE = 'exchange',
+  RENT = 'rent',
+}
+
+@Schema({ timestamps: true, collection: 'book_copies' })
 export class BookCopy {
   /**
    * type: Types.ObjectId - вказує, що значення цієї властивості має тип ObjectId
@@ -62,6 +68,12 @@ export class BookCopy {
 
   @Prop()
   condition: string;
+
+  @Prop({
+    enum: BookCopyAvailabilityType,
+    default: BookCopyAvailabilityType.LEND,
+  })
+  availabilityType: string;
 }
 
 export const BookCopySchema = SchemaFactory.createForClass(BookCopy);

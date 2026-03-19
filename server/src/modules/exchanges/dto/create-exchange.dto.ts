@@ -1,4 +1,9 @@
-export class createExchangeDto {
+/**
+ * Data transfer Object - клас, який визначає структуру даних, що приходять у запиті
+ * (наприклад, у тілі POST-запиту). Він допомагає явно описати, які саме поля очікуються
+ * від користувача, і використовується для валідації та типізації даних.
+ */
+export class CreateExchangeDto {
   initiatorId: string;
   bookCopyId: string;
 }

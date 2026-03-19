@@ -10,7 +10,7 @@ export enum ExchangeStatus {
   CANCELED = 'canceled',
 }
 
-@Schema({ timestamps: true })
+@Schema({ timestamps: true, collection: 'exchanges' })
 export class Exchange {
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   initiatorId: Types.ObjectId;

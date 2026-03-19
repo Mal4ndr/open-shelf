@@ -40,7 +40,7 @@ export type BookDocument = Book & Document;
  * У цьому випадку timestamps: true каже Mongoose автоматично додавати
  * поля createdAt і updatedAt до кожного документа.
  */
-@Schema({ timestamps: true })
+@Schema({ timestamps: true, collection: 'books' })
 export class Book {
   /**
    * @Prop оголошує властивість класу як поле схеми mongoose, його параметр-об'єкт
