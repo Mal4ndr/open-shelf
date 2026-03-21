@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
+import { Document, Types, Schema as MongooseSchema } from 'mongoose';
 
 export type BookCopyDocument = BookCopy & Document;
 
@@ -47,10 +47,10 @@ export class BookCopy {
    * Types.ObjectId — це тип, а _id — це поле. Тобто type: Types.ObjectId говорить що
    * значенням цієї властивості буде _id якогось документа.
    */
-  @Prop({ type: Types.ObjectId, ref: 'Book', required: true })
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Book', required: true })
   bookId: Types.ObjectId;
 
-  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User', required: true })
   ownerId: Types.ObjectId;
 
   /**

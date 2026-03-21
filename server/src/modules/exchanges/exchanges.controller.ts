@@ -26,7 +26,7 @@ export class ExchangesController {
    * валідацію та типізацію.
    */
   @Post()
-  createExchangeRequest(@Body() createExchangeDto: CreateExchangeDto) {
+  createExchange(@Body() createExchangeDto: CreateExchangeDto) {
     return this.exchangesService.createExchange(createExchangeDto);
   }
 

@@ -1,7 +1,7 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import {
   Exchange,
   ExchangeDocument,
@@ -43,6 +43,8 @@ export class ExchangesService {
    */
   async createExchange(createExchangeDto: CreateExchangeDto) {
     const { initiatorId, bookCopyId } = createExchangeDto;
+
+    // #region bookCopy
     const bookCopy = await this.bookCopyModel.findById(bookCopyId);
 
     if (!bookCopy) {
@@ -56,7 +58,7 @@ export class ExchangesService {
       throw new NotFoundException('Book copy not found');
     }
 
-    if (bookCopy.status !== 'available') {
+    if (bookCopy.status !== BookCopyStatus.AVAILABLE) {
       throw new BadRequestException('Book is not available');
     }
 
@@ -69,7 +71,9 @@ export class ExchangesService {
     if (bookCopy.ownerId.toString() === initiatorId) {
       throw new BadRequestException('You cannot request your own book');
     }
+    // #endregion
 
+    // #region exchange
     /**
      * Додано перевірку як на рівні production розробки. Оскільки юзер може безліч разів натиснути
      * кнопку для створення обміну, відповідно створиться стільки ж обмінів, що є ненормальною
@@ -93,6 +97,9 @@ export class ExchangesService {
       throw new BadRequestException('Exchange request already exists');
     }
 
+    console.log(typeof initiatorId);
+    console.log(initiatorId);
+
     /**
      * Операція створення документа в базі (this.exchangeModel.create(...)) — це звернення до
      * зовнішнього ресурсу (бази даних). Такі операції займають невідомий час (залежить від мережі,
@@ -108,10 +115,19 @@ export class ExchangesService {
       status: ExchangeStatus.REQUESTED,
     });
 
+    console.log(
+      'Here should be a boolean value',
+      exchange.initiatorId instanceof Types.ObjectId,
+    );
+
+    console.log(typeof exchange.initiatorId);
+
     return exchange;
+    // #endregion
   }
 
   async acceptExchange(exchangeId: string, userId: string) {
+    // #region exchange
     const exchange = await this.exchangeModel.findById(exchangeId);
 
     if (!exchange) {
@@ -125,8 +141,10 @@ export class ExchangesService {
     if (exchange.status !== ExchangeStatus.REQUESTED) {
       throw new BadRequestException('Exchange already processed');
     }
+    // #endregion
 
-    const bookCopy = await this.bookCopyModel.findById(exchangeId);
+    // #region bookCopy
+    const bookCopy = await this.bookCopyModel.findById(exchange.bookCopyId);
 
     if (!bookCopy) {
       throw new NotFoundException('Book copy not found');
@@ -147,7 +165,25 @@ export class ExchangesService {
     await this.bookCopyModel.findByIdAndUpdate(exchange.bookCopyId, {
       status: BookCopyStatus.BORROWED,
     });
+    // #endregion
+
     return exchange;
+  }
+
+  async rejectExchange(exchangeId: string, userId: string) {
+    const exchange = await this.exchangeModel.findById(exchangeId);
+
+    if (!exchange) {
+      throw new NotFoundException('Exchange not found');
+    }
+
+    if (exchange.responderId.toString() !== userId) {
+      throw new ForbiddenException('Only owner can reject exchange');
+    }
+
+    if (exchange.status === ExchangeStatus.CANCELED) {
+      throw new BadRequestException('Exchange already procced/rejected');
+    }
   }
 
   /**

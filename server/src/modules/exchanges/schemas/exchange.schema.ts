@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
+import { Document, Types, Schema as MongooseSchema } from 'mongoose';
 
 export type ExchangeDocument = Exchange & Document;
 
@@ -12,13 +12,17 @@ export enum ExchangeStatus {
 
 @Schema({ timestamps: true, collection: 'exchanges' })
 export class Exchange {
-  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User', required: true })
   initiatorId: Types.ObjectId;
 
-  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User', required: true })
   responderId: Types.ObjectId;
 
-  @Prop({ type: Types.ObjectId, ref: 'BookCopy', required: true })
+  @Prop({
+    type: MongooseSchema.Types.ObjectId,
+    ref: 'BookCopy',
+    required: true,
+  })
   bookCopyId: Types.ObjectId;
 
   @Prop({
