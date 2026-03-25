@@ -58,4 +58,19 @@ export class ExchangesController {
   getMyExchanges(@Query('userId') userId: string) {
     return this.exchangesService.getMyExchanges(userId);
   }
+
+  @Patch(':id/reject')
+  rejectExchange(@Param('id') id: string, @Body('userId') userId: string) {
+    return this.exchangesService.rejectExchange(id, userId);
+  }
+
+  @Patch(':id/cancel')
+  cancelExchange(@Param('id') id: string, @Body('userId') userId: string) {
+    return this.exchangesService.cancelExchange(id, userId);
+  }
+
+  @Patch(':id/complete')
+  completeExchange(@Param('id') id: string, @Body('userId') userId: string) {
+    return this.exchangesService.completeExchange(id, userId);
+  }
 }

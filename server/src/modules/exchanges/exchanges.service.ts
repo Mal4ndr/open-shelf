@@ -55,6 +55,7 @@ export class ExchangesService {
        * HTTP-винятки (ForbiddenException, UnauthorizedException тощо). Обрано саме ці, бо
        * вони чітко відповідають ситуації: "не знайдено" або "некоректний запит".
        */
+
       throw new NotFoundException('Book copy not found');
     }
 
@@ -97,9 +98,6 @@ export class ExchangesService {
       throw new BadRequestException('Exchange request already exists');
     }
 
-    console.log(typeof initiatorId);
-    console.log(initiatorId);
-
     /**
      * Операція створення документа в базі (this.exchangeModel.create(...)) — це звернення до
      * зовнішнього ресурсу (бази даних). Такі операції займають невідомий час (залежить від мережі,
@@ -114,13 +112,6 @@ export class ExchangesService {
       bookCopyId,
       status: ExchangeStatus.REQUESTED,
     });
-
-    console.log(
-      'Here should be a boolean value',
-      exchange.initiatorId instanceof Types.ObjectId,
-    );
-
-    console.log(typeof exchange.initiatorId);
 
     return exchange;
     // #endregion
@@ -168,22 +159,6 @@ export class ExchangesService {
     // #endregion
 
     return exchange;
-  }
-
-  async rejectExchange(exchangeId: string, userId: string) {
-    const exchange = await this.exchangeModel.findById(exchangeId);
-
-    if (!exchange) {
-      throw new NotFoundException('Exchange not found');
-    }
-
-    if (exchange.responderId.toString() !== userId) {
-      throw new ForbiddenException('Only owner can reject exchange');
-    }
-
-    if (exchange.status === ExchangeStatus.CANCELED) {
-      throw new BadRequestException('Exchange already procced/rejected');
-    }
   }
 
   /**
@@ -239,5 +214,79 @@ export class ExchangesService {
         // #endregion
         .sort({ createdAt: -1 })
     );
+  }
+
+  async rejectExchange(exchangeId: string, userId: string) {
+    const exchange = await this.exchangeModel.findById(exchangeId);
+
+    if (!exchange) {
+      throw new NotFoundException('Exchange not found');
+    }
+
+    if (exchange.responderId.toString() !== userId) {
+      throw new ForbiddenException('Only owner can reject exchange');
+    }
+
+    if (exchange.status !== ExchangeStatus.REQUESTED) {
+      throw new BadRequestException('Only requested exchange can be rejected');
+    }
+
+    exchange.status = ExchangeStatus.CANCELED;
+    await exchange.save();
+
+    return exchange;
+  }
+
+  async cancelExchange(exchangeId: string, userId: string) {
+    const exchange = await this.exchangeModel.findById(exchangeId);
+
+    if (!exchange) {
+      throw new NotFoundException('Exchange not found');
+    }
+
+    if (exchange.initiatorId.toString() !== userId) {
+      throw new ForbiddenException('Only initator can cancel exchange');
+    }
+
+    if (exchange.status !== ExchangeStatus.REQUESTED) {
+      throw new BadRequestException("You can't cancel processed exchange");
+    }
+
+    exchange.status = ExchangeStatus.CANCELED;
+    await exchange.save();
+
+    return exchange;
+  }
+
+  async completeExchange(exchangeId: string, userId: string) {
+    const exchange = await this.exchangeModel.findById(exchangeId);
+
+    if (!exchange) {
+      throw new NotFoundException('Exchange not found');
+    }
+
+    if (exchange.responderId.toString() !== userId) {
+      throw new ForbiddenException('Only owner can complete exchange');
+    }
+
+    if (exchange.status !== ExchangeStatus.ACTIVE) {
+      throw new BadRequestException(
+        "You can't complete exchange if it's not active",
+      );
+    }
+
+    const bookCopy = await this.bookCopyModel.findById(exchange.bookCopyId);
+
+    if (!bookCopy) {
+      throw new NotFoundException('Book copy not found');
+    }
+
+    bookCopy.status = BookCopyStatus.AVAILABLE;
+    await bookCopy.save();
+
+    exchange.status = ExchangeStatus.COMPLETED;
+    await exchange.save();
+
+    return exchange;
   }
 }
