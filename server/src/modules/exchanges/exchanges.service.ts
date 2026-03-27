@@ -48,7 +48,7 @@ export class ExchangesService {
     const bookCopy = await this.bookCopyModel.findById(bookCopyId);
 
     if (!bookCopy) {
-      /**
+      /*
        * NotFoundException разом з BadRequestException є стандартними обробниками помилок NestJS
        * для HTTP-винятків. Вони широко використовуються для повернення коректних статус-кодів
        * (404, 400). Є й інші варіанти: можна кидати власні помилки або використовувати інші

@@ -20,6 +20,7 @@ import { BookCopiesController } from './modules/book-copies/book-copies.controll
 import { BookCopiesModule } from './modules/book-copies/book-copies.module';
 import { UsersModule } from './modules/users/users.module';
 import { ExchangesModule } from './modules/exchanges/exchanges.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 // декоратор який вказує що клас є модулем, системною одиницею модульної архітектури фреймворка
 @Module({
@@ -58,9 +59,10 @@ import { ExchangesModule } from './modules/exchanges/exchanges.module';
     BookCopiesModule,
     UsersModule,
     ExchangesModule,
+    AuthModule,
   ],
-  controllers: [AppController, BookCopiesController],
-  providers: [AppService, BookCopiesService],
+  controllers: [AppController],
+  providers: [AppService],
 })
 
 // екпорт дозволяє стати даному класу доступним через імпортування в інших файлах

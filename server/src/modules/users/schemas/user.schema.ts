@@ -8,8 +8,12 @@ export class User {
   @Prop({ required: true, unique: true })
   email: string;
 
-  @Prop({ required: true, unique: true })
-  username: string;
+  /**
+   * опція 'select: false' говорить базі не повертати це поле за замовчуванням
+   * у відповіді на запит.
+   */
+  @Prop({ required: true, select: false })
+  password: string;
 
   @Prop({ default: 0 })
   reputation: number;
