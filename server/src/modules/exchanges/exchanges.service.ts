@@ -41,8 +41,11 @@ export class ExchangesService {
    * async/await обрано через простоту та зручність для роботи з промісами у сучасному TS/NestJS.
    * Без await довелося б писати вкладені .then(), що ускладнює читання.
    */
-  async createExchange(createExchangeDto: CreateExchangeDto) {
-    const { initiatorId, bookCopyId } = createExchangeDto;
+  async createExchange(
+    createExchangeDto: CreateExchangeDto,
+    initiatorId: string,
+  ) {
+    const { bookCopyId } = createExchangeDto;
 
     // #region bookCopy
     const bookCopy = await this.bookCopyModel.findById(bookCopyId);

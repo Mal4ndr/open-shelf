@@ -4,6 +4,5 @@
  * від користувача, і використовується для валідації та типізації даних.
  */
 export class CreateExchangeDto {
-  initiatorId: string;
   bookCopyId: string;
 }
