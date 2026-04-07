@@ -28,15 +28,6 @@ export class AuthService {
       throw new BadRequestException('User with this email already exists');
     }
 
-    /**
-     * saltRound - кількість раундів (ітерацій) хешування, які використовує bcrypt для генерації
-     * "солі" (salt) і хешу. Чим більше значення, тим складніше і повільніше підбирати пароль
-     * перебором. Його основна функція — зробити хешування більш захищеним від атак перебором
-     * (brute-force), а не "уніфікувати" пароль.
-     *
-     * Сіль (salt) — це випадковий рядок, який додається до пароля перед хешуванням, щоб навіть
-     * однакові паролі мали різні хеші.
-     */
     const saltRound = 10;
     const hashedPassword = await bcrypt.hash(password, saltRound);
 

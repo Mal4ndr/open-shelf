@@ -4,16 +4,13 @@ import { ExchangesController } from './exchanges.controller';
 
 import { MongooseModule } from '@nestjs/mongoose';
 import { Exchange, ExchangeSchema } from './schemas/exchange.schema';
-import {
-  BookCopy,
-  BookCopySchema,
-} from '../book-copies/schemas/book-copy.schema';
+import { Item, ItemSchema } from '../items/schemas/item.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: Exchange.name, schema: ExchangeSchema },
-      { name: BookCopy.name, schema: BookCopySchema },
+      { name: Item.name, schema: ItemSchema },
     ]),
   ],
   providers: [ExchangesService],

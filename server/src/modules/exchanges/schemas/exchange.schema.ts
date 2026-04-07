@@ -13,29 +13,29 @@ export enum ExchangeStatus {
 @Schema({ timestamps: true, collection: 'exchanges' })
 export class Exchange {
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User', required: true })
-  initiatorId: Types.ObjectId;
+  initiatorId!: Types.ObjectId;
 
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User', required: true })
-  responderId: Types.ObjectId;
+  responderId!: Types.ObjectId;
 
   @Prop({
     type: MongooseSchema.Types.ObjectId,
-    ref: 'BookCopy',
+    ref: 'Item',
     required: true,
   })
-  bookCopyId: Types.ObjectId;
+  itemId!: Types.ObjectId;
 
   @Prop({
     enum: ExchangeStatus,
     default: ExchangeStatus.REQUESTED,
   })
-  status: ExchangeStatus;
+  status!: ExchangeStatus;
 
   @Prop()
-  dueDate: Date;
+  dueDate!: Date;
 
   @Prop()
-  returnedAt: Date;
+  returnedAt!: Date;
 }
 
 export const ExchangeSchema = SchemaFactory.createForClass(Exchange);
