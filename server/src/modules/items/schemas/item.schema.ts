@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Types, Schema as MongooseSchema } from 'mongoose';
 
 export type ItemDocument = Item & Document;
 
@@ -22,8 +22,8 @@ export class Item {
   @Prop()
   description!: string;
 
-  @Prop()
-  ownerId!: string;
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Item', required: true })
+  ownerId!: Types.ObjectId;
 
   @Prop()
   image!: string;

@@ -67,13 +67,6 @@ export class AuthService {
       email: existingUser.email,
     };
 
-    /**
-     * signAsync/sign - методи що створюють (підписують) JWT токен, беручи payload
-     * (наприклад, { sub, email }) і кодуючи його у форматі JWT. Далі підисують секретним ключем
-     * (щоб токен не можна було підробити). Результатом є рядок-токен, що відправляється клієнту.
-     * Клієнт потім надсилає цей токен у заголовку Authorization, а сервер може перевірити
-     * підпис і payload.
-     */
     const access_token = await this.jwtService.signAsync(payload);
 
     return {
