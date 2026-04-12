@@ -22,7 +22,12 @@ export class Item {
   @Prop()
   description!: string;
 
-  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Item', required: true })
+  @Prop({
+    type: MongooseSchema.Types.ObjectId,
+    ref: 'Item',
+    required: true,
+    index: true,
+  }) // ref: 'Item'?
   ownerId!: Types.ObjectId;
 
   @Prop()
@@ -31,6 +36,7 @@ export class Item {
   @Prop({
     enum: ItemStatus,
     default: ItemStatus.AVAILABLE,
+    index: true,
   })
   status!: string;
 

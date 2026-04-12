@@ -12,10 +12,20 @@ export enum ExchangeStatus {
 
 @Schema({ timestamps: true, collection: 'exchanges' })
 export class Exchange {
-  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User', required: true })
+  @Prop({
+    type: MongooseSchema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+    index: true,
+  })
   initiatorId!: Types.ObjectId;
 
-  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User', required: true })
+  @Prop({
+    type: MongooseSchema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+    index: true,
+  })
   responderId!: Types.ObjectId;
 
   @Prop({
@@ -28,6 +38,7 @@ export class Exchange {
   @Prop({
     enum: ExchangeStatus,
     default: ExchangeStatus.REQUESTED,
+    index: true,
   })
   status!: ExchangeStatus;
 
