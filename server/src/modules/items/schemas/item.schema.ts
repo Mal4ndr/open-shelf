@@ -24,10 +24,10 @@ export class Item {
 
   @Prop({
     type: MongooseSchema.Types.ObjectId,
-    ref: 'Item',
+    ref: 'Item', // ref: 'Item'?
     required: true,
     index: true,
-  }) // ref: 'Item'?
+  })
   ownerId!: Types.ObjectId;
 
   @Prop()
@@ -43,7 +43,7 @@ export class Item {
   @Prop({
     type: [String],
     enum: ItemAvailabilityType,
-    default: ItemAvailabilityType.EXCHANGE,
+    default: ItemAvailabilityType.LEND,
   })
   availability!: ItemAvailabilityType[];
 }

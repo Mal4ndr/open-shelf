@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -13,14 +14,15 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CreateItemDto } from './dto/create-item.dto';
 import { ItemsService } from './items.service';
 import { UpdateItemDto } from './dto/update-item.dto';
+import { GetItemsDto } from './dto/get-items.dto';
 
 @Controller('items')
 export class ItemsController {
   constructor(private readonly itemsService: ItemsService) {}
 
   @Get()
-  getItems() {
-    return this.itemsService.getItems();
+  getItems(@Query() query: GetItemsDto) {
+    return this.itemsService.getItems(query);
   }
 
   @UseGuards(JwtAuthGuard)

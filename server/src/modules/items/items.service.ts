@@ -8,13 +8,24 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Item, ItemDocument } from './schemas/item.schema';
 import { Model } from 'mongoose';
 import { UpdateItemDto } from './dto/update-item.dto';
+import { GetItemsDto } from './dto/get-items.dto';
 
 @Injectable()
 export class ItemsService {
   constructor(@InjectModel(Item.name) private itemModel: Model<ItemDocument>) {}
 
-  async getItems() {
-    return await this.itemModel.find({});
+  async getItems(query: GetItemsDto) {
+    const filter: any = {};
+
+    if (query.status) {
+      filter.status = query.status;
+    }
+
+    if (query.ownerId) {
+      filter.ownerId = query.ownerId;
+    }
+
+    return await this.itemModel.find(filter);
   }
 
   async getMyItems(userId: string) {
