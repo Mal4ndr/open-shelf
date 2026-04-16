@@ -29,7 +29,21 @@ export default tseslint.config(
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-floating-promises': 'warn',
       '@typescript-eslint/no-unsafe-argument': 'warn',
-      "prettier/prettier": ["error", { endOfLine: "auto" }],
+      'prettier/prettier': ['error', { endOfLine: 'auto' }],
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector:
+            "MemberExpression[object.name='process'][property.name='env']",
+          message: 'Use ConfigService instead of process.env directly.',
+        },
+      ],
+    },
+  },
+  {
+    files: ['src/config/**/*.ts', 'src/main.ts'],
+    rules: {
+      'no-restricted-syntax': 'off',
     },
   },
 );

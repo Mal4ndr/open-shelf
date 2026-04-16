@@ -11,22 +11,22 @@ import { ExchangesModule } from './modules/exchanges/exchanges.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ItemsModule } from './modules/items/items.module';
 
+import { validationSchema } from './config/app.config';
+
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+      validationSchema,
+    }),
     MongooseModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => {
-        const env = configService.get('NODE_ENV');
-
-        const uri =
-          env === 'development'
-            ? configService.get('MONGO_URI_DEV')
-            : configService.get('MONGO_URI');
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => {
+        const uri = config.getOrThrow<string>('MONGO_URI_LOCAL');
 
         return { uri };
       },
-      inject: [ConfigService],
     }),
     UsersModule,
     ExchangesModule,
