@@ -32,6 +32,7 @@ export class ExchangesService {
   ) {
     const { itemId } = createExchangeDto;
 
+    //#region Item existence and availability check
     const item = await this.itemModel.findById(itemId);
 
     if (!item) {
@@ -39,27 +40,34 @@ export class ExchangesService {
     }
 
     if (item.status !== ItemStatus.AVAILABLE) {
-      throw new BadRequestException('Item is not available');
+      throw new BadRequestException('Item not available');
     }
 
     if (!item.availability.includes(ItemAvailabilityType.EXCHANGE)) {
       throw new BadRequestException('Item not available for exchange');
     }
+    //#endregion
 
+    //#region Initiator check
     if (item.ownerId.toString() === initiatorId) {
       throw new BadRequestException('You cannot request your own item');
     }
+    //#endregion
 
+    //#region Prevent duplicate exchange for item
     const existingExchange = await this.exchangeModel.findOne({
-      initiatorId,
       itemId,
-      status: ExchangeStatus.REQUESTED,
+      status: { $in: [ExchangeStatus.REQUESTED, ExchangeStatus.ACTIVE] },
     });
 
     if (existingExchange) {
-      throw new BadRequestException('Exchange request already exists');
+      throw new BadRequestException(
+        'Exchange request for this item already exists',
+      );
     }
+    //#endregion
 
+    //#region Create exchange
     const exchange = await this.exchangeModel.create({
       initiatorId,
       responderId: item.ownerId,
@@ -68,6 +76,7 @@ export class ExchangesService {
     });
 
     return exchange;
+    //#endregion
   }
 
   async acceptExchange(exchangeId: string, userId: string) {

@@ -43,7 +43,7 @@ export class Item {
   @Prop({
     type: [String],
     enum: ItemAvailabilityType,
-    default: ItemAvailabilityType.LEND,
+    default: ItemAvailabilityType.EXCHANGE,
   })
   availability!: ItemAvailabilityType[];
 }
