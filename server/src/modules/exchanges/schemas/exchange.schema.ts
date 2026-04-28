@@ -8,6 +8,7 @@ export enum ExchangeStatus {
   ACTIVE = 'active',
   COMPLETED = 'completed',
   CANCELED = 'canceled',
+  REJECTED = 'rejected',
 }
 
 @Schema({ timestamps: true, collection: 'exchanges' })

@@ -82,6 +82,7 @@ export class ExchangesService {
   async acceptExchange(exchangeId: string, userId: string) {
     const exchange = await this.exchangeModel.findById(exchangeId);
 
+    //#region Exchange existence, permission and status check
     if (!exchange) {
       throw new NotFoundException('Exchange not found');
     }
@@ -93,7 +94,9 @@ export class ExchangesService {
     if (exchange.status !== ExchangeStatus.REQUESTED) {
       throw new BadRequestException('Exchange already processed');
     }
+    //#endregion
 
+    //#region Item existence and availability check
     const item = await this.itemModel.findById(exchange.itemId);
 
     if (!item) {
@@ -103,13 +106,29 @@ export class ExchangesService {
     if (item.status !== ItemStatus.AVAILABLE) {
       throw new BadRequestException('Item not available');
     }
+    //#endregion
 
+    //#region Reject other existing exchanges
+    await this.exchangeModel.updateMany(
+      {
+        itemId: exchange.itemId,
+        status: ExchangeStatus.REQUESTED,
+        initiatorId: { $ne: exchange.initiatorId },
+      },
+      {
+        $set: { status: ExchangeStatus.REJECTED },
+      },
+    );
+    //#endregion
+
+    //#region Exchange and item status change
     exchange.status = ExchangeStatus.ACTIVE;
     await exchange.save();
 
     await this.itemModel.findByIdAndUpdate(exchange.itemId, {
       status: ItemStatus.BORROWED,
     });
+    //#endregion
 
     return exchange;
   }
