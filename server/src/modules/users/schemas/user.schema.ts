@@ -13,6 +13,21 @@ export class User {
 
   @Prop({ default: 0 })
   reputation!: number;
+
+  @Prop()
+  name!: string;
+
+  @Prop()
+  avatar!: string;
+
+  @Prop()
+  city!: string;
+
+  @Prop()
+  bio!: string;
+
+  @Prop({ default: 0 })
+  rating!: number;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
