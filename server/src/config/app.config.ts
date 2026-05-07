@@ -17,5 +17,5 @@ export const validationSchema = Joi.object<AppConfig>({
     .valid('development', 'production', 'test')
     .default('development'),
   JWT_SECRET: Joi.string().required(),
-  JWT_EXPIRES_IN: Joi.string().default('7d'),
+  JWT_EXPIRES_IN: Joi.string().default('1d'),
 });

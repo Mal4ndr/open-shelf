@@ -140,7 +140,56 @@ export class ExchangesService {
       })
       .populate({
         path: 'itemId',
-        select: 'name status ownerId image',
+        select: 'name status ownerId',
+      })
+      .sort({ createdAt: -1 });
+  }
+
+  async getMyIncomingExchanges(userId: string) {
+    return this.exchangeModel
+      .find(
+        {
+          responderId: userId,
+          status: ExchangeStatus.REQUESTED,
+        },
+        {
+          responderId: 0,
+          updatedAt: 0,
+          __v: 0,
+          status: 0,
+        },
+      )
+      .populate({
+        path: 'itemId',
+        select: 'name',
+      })
+      .populate({
+        path: 'initiatorId',
+        select: 'name',
+      })
+      .sort({ createdAt: -1 });
+  }
+
+  async getMyOutgoingExchanges(userId: string) {
+    return this.exchangeModel
+      .find(
+        {
+          initiatorId: userId,
+        },
+        {
+          initiatorId: 0,
+          createdAt: 0,
+          updatedAt: 0,
+          __v: 0,
+        },
+      )
+      .populate({
+        path: 'itemId',
+        select: 'name',
+      })
+      .populate({
+        path: 'responderId',
+        select: 'name',
       })
       .sort({ createdAt: -1 });
   }

@@ -39,6 +39,16 @@ export class ExchangesController {
     return this.exchangesService.getMyExchanges(req.user.userId);
   }
 
+  @Get('incoming')
+  getMyIncomingExchanges(@Req() req: any) {
+    return this.exchangesService.getMyIncomingExchanges(req.user.userId);
+  }
+
+  @Get('outgoing')
+  getMyOutgoingExchanges(@Req() req: any) {
+    return this.exchangesService.getMyOutgoingExchanges(req.user.userId);
+  }
+
   @Patch(':id/reject')
   rejectExchange(@Param('id') id: string, @Req() req: any) {
     return this.exchangesService.rejectExchange(id, req.user.userId);
