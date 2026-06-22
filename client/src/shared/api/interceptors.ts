@@ -1,12 +1,18 @@
 /**
  * Суть файлу полягає у налаштуванні перехоплювачів (interceptors) для запитів/відповідей
  * (наприклад, додавання токенів, обробка помилок). Інтерсептори мають side-effect, беруть
- * apiClient і навішують на нього правида перед запитом/після відповіді.
+ * apiClient і навішують на нього правила перед запитом/після відповіді.
  */
 
 import { tokenStorage } from "@/features/auth/lib/token-storage";
 import { apiClient } from "./api-client";
 
+/**
+ * Код нижче означає:
+ * Перед будь-яким запитом apiClient перевіряє, чи є токен.
+ * Якщо є — додає заголовок Authorization: Bearer ...
+ * Тобто не треба вручну додавати токен у кожен API-запит
+ */
 apiClient.interceptors.request.use((config) => {
    const token = tokenStorage.getToken();
 
